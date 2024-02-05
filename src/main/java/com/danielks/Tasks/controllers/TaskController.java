@@ -14,8 +14,8 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/tasks")
 public class TaskController {
-    @Autowired
-    private TaskService service;
+
+    private final TaskService service;
 
     public TaskController(TaskService service) {
         this.service = service;
