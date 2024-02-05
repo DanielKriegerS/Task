@@ -1,10 +1,8 @@
 package com.danielks.Tasks.services;
 
 import com.danielks.Tasks.entities.Task;
-import com.danielks.Tasks.models.TaskModelBasic;
-import com.danielks.Tasks.models.TaskModelComplete;
+import com.danielks.Tasks.dtos.TaskDTO;
 import com.danielks.Tasks.repositories.TaskRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,8 +17,8 @@ public class TaskService {
     public TaskService(TaskRepository repository){
         this.repository = repository;
     }
-    public TaskModelComplete convertToModelComplete (Task task){
-        return new TaskModelComplete(
+    public TaskDTO convertToDTO(Task task){
+        return new TaskDTO(
                 task.getId(),
                 task.getHeader(),
                 task.getBody(),
@@ -28,43 +26,43 @@ public class TaskService {
         );
     }
 
-    public Task convertToEntity (TaskModelComplete taskModelComplete){
+    public Task convertToEntity (TaskDTO taskDTO){
         return new Task(
-                taskModelComplete.id(),
-                taskModelComplete.header(),
-                taskModelComplete.body(),
-                taskModelComplete.ended()
+                taskDTO.id(),
+                taskDTO.header(),
+                taskDTO.body(),
+                taskDTO.ended()
         );
     }
 
-    public Optional<TaskModelComplete> getTaskById(Long id) throws Exception {
+    public Optional<TaskDTO> getTaskById(Long id) throws Exception {
         Optional<Task> optionalTask = repository.findById(id);
 
         if(optionalTask.isPresent()){
-            return optionalTask.map(this::convertToModelComplete);
+            return optionalTask.map(this::convertToDTO);
         } else {
             throw new Exception("Exceção genérica");
         }
     }
 
-    public List<TaskModelComplete> getAllTasks() {
+    public List<TaskDTO> getAllTasks() {
         List<Task> tasks = repository.findAll();
         return tasks.stream()
-                .map(this::convertToModelComplete)
+                .map(this::convertToDTO)
                 .collect(Collectors.toList());
     }
 
-    public TaskModelBasic createTask(TaskModelComplete taskModelComplete) throws Exception {
-        if(taskModelComplete.body() == null || taskModelComplete.header() == null){
+    public TaskDTO createTask(TaskDTO taskDTO) throws Exception {
+        if(taskDTO.body() == null || taskDTO.header() == null){
             throw new Exception("Exceção genérica!");
         }
 
-        Task createdTask = convertToEntity(taskModelComplete);
+        Task createdTask = convertToEntity(taskDTO);
         createdTask = repository.save(createdTask);
-        return new TaskModelBasic(createdTask.getId());
+        return convertToDTO(createdTask);
     }
 
-    public TaskModelBasic updateTask(Long id, TaskModelComplete updatedTask) throws Exception {
+    public TaskDTO updateTask(Long id, TaskDTO updatedTask) throws Exception {
         Optional<Task> optionalTask = repository.findById(id);
 
         if(optionalTask.isPresent()){
@@ -79,13 +77,13 @@ public class TaskService {
             }
 
             repository.save(existingTask);
-            return new TaskModelBasic(id);
+            return convertToDTO(existingTask);
         } else {
             throw new Exception("Exceção genérica!");
         }
     }
 
-    public TaskModelBasic endTask(Long id) throws Exception {
+    public TaskDTO endTask(Long id) throws Exception {
         Optional<Task> endedTask = repository.findById(id);
         if (endedTask.isPresent()) {
 
@@ -94,7 +92,7 @@ public class TaskService {
 
                 taskToEnd.setEnded(true);
                 repository.save(taskToEnd);
-                return new TaskModelBasic(id);
+                return convertToDTO(taskToEnd);
             } else {
                 throw new Exception("Exceção genérica - Tarafa já encerrada");
             }
