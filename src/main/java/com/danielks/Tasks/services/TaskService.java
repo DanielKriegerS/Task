@@ -2,6 +2,9 @@ package com.danielks.Tasks.services;
 
 import com.danielks.Tasks.entities.Task;
 import com.danielks.Tasks.dtos.TaskDTO;
+import com.danielks.Tasks.exceptions.InvalidRequestException;
+import com.danielks.Tasks.exceptions.task.EndedTaskException;
+import com.danielks.Tasks.exceptions.task.TaskNotFoundException;
 import com.danielks.Tasks.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
 
@@ -41,7 +44,7 @@ public class TaskService {
         if(optionalTask.isPresent()){
             return optionalTask.map(this::convertToDTO);
         } else {
-            throw new Exception("Exceção genérica");
+            throw new TaskNotFoundException(id);
         }
     }
 
@@ -52,9 +55,12 @@ public class TaskService {
                 .collect(Collectors.toList());
     }
 
-    public TaskDTO createTask(TaskDTO taskDTO) throws Exception {
-        if(taskDTO.body() == null || taskDTO.header() == null){
-            throw new Exception("Exceção genérica!");
+    public TaskDTO createTask(TaskDTO taskDTO) {
+        if(taskDTO.body() == null){
+            throw new InvalidRequestException("body");
+        }
+        if (taskDTO.header() == null){
+            throw new InvalidRequestException("header");
         }
 
         Task createdTask = convertToEntity(taskDTO);
@@ -62,7 +68,7 @@ public class TaskService {
         return convertToDTO(createdTask);
     }
 
-    public TaskDTO updateTask(Long id, TaskDTO updatedTask) throws Exception {
+    public TaskDTO updateTask(Long id, TaskDTO updatedTask) {
         Optional<Task> optionalTask = repository.findById(id);
 
         if(optionalTask.isPresent()){
@@ -79,7 +85,7 @@ public class TaskService {
             repository.save(existingTask);
             return convertToDTO(existingTask);
         } else {
-            throw new Exception("Exceção genérica!");
+            throw new TaskNotFoundException(id);
         }
     }
 
@@ -94,11 +100,10 @@ public class TaskService {
                 repository.save(taskToEnd);
                 return convertToDTO(taskToEnd);
             } else {
-                throw new Exception("Exceção genérica - Tarafa já encerrada");
+                throw new EndedTaskException(id);
             }
-
         } else {
-            throw new Exception("Exceção genérica");
+            throw new TaskNotFoundException(id);
         }
     }
     public void deleteTask(Long id) {
