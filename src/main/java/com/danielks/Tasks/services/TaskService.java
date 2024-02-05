@@ -13,9 +13,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
-    @Autowired
-    private TaskRepository repository;
 
+    private final TaskRepository repository;
+
+    public TaskService(TaskRepository repository){
+        this.repository = repository;
+    }
     public TaskModelComplete convertToModelComplete (Task task){
         return new TaskModelComplete(
                 task.getId(),
