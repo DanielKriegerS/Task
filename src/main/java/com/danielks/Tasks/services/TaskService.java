@@ -28,7 +28,7 @@ public class TaskService {
         Optional<Task> optionalTask = repository.findById(id);
 
         if(optionalTask.isPresent()){
-            return optionalTask.map(mapper::taskToTaskDTO);
+            return optionalTask.map(mapper.INSTANCE::taskToTaskDTO);
         } else {
             throw new TaskNotFoundException(id);
         }
@@ -37,7 +37,7 @@ public class TaskService {
     public List<TaskDTO> getAllTasks() {
         List<Task> tasks = repository.findAll();
         return tasks.stream()
-                .map(mapper::taskToTaskDTO)
+                .map(mapper.INSTANCE::taskToTaskDTO)
                 .collect(Collectors.toList());
     }
 
@@ -49,9 +49,9 @@ public class TaskService {
             throw new InvalidRequestException("header");
         }
 
-        Task createdTask = mapper.taskDTOToTask(taskDTO);
+        Task createdTask = mapper.INSTANCE.taskDTOToTask(taskDTO);
         createdTask = repository.save(createdTask);
-        return mapper.taskToTaskDTO(createdTask);
+        return mapper.INSTANCE.taskToTaskDTO(createdTask);
     }
 
     public TaskDTO updateTask(Long id, TaskDTO updatedTask) {
@@ -69,7 +69,7 @@ public class TaskService {
             }
 
             repository.save(existingTask);
-            return mapper.taskToTaskDTO(existingTask);
+            return mapper.INSTANCE.taskToTaskDTO(existingTask);
         } else {
             throw new TaskNotFoundException(id);
         }
@@ -84,7 +84,7 @@ public class TaskService {
 
                 taskToEnd.setEnded(true);
                 repository.save(taskToEnd);
-                return mapper.taskToTaskDTO(taskToEnd);
+                return mapper.INSTANCE.taskToTaskDTO(taskToEnd);
             } else {
                 throw new EndedTaskException(id);
             }
