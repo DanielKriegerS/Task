@@ -23,23 +23,6 @@ public class TaskService {
         this.repository = repository;
         this.mapper = mapper;
     }
-    public TaskDTO convertToDTO(Task task){
-        return new TaskDTO(
-                task.getId(),
-                task.getHeader(),
-                task.getBody(),
-                task.isEnded()
-        );
-    }
-
-    public Task convertToEntity (TaskDTO taskDTO){
-        return new Task(
-                taskDTO.id(),
-                taskDTO.header(),
-                taskDTO.body(),
-                taskDTO.ended()
-        );
-    }
 
     public Optional<TaskDTO> getTaskById(Long id) {
         Optional<Task> optionalTask = repository.findById(id);
