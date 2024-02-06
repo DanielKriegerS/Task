@@ -1,5 +1,6 @@
 package com.danielks.Tasks.services;
 
+import com.danielks.Tasks.dtos.mappers.TaskMapper;
 import com.danielks.Tasks.entities.Task;
 import com.danielks.Tasks.dtos.TaskDTO;
 import com.danielks.Tasks.exceptions.InvalidRequestException;
@@ -16,9 +17,11 @@ import java.util.stream.Collectors;
 public class TaskService {
 
     private final TaskRepository repository;
+    private final TaskMapper mapper;
 
-    public TaskService(TaskRepository repository){
+    public TaskService(TaskRepository repository, TaskMapper mapper){
         this.repository = repository;
+        this.mapper = mapper;
     }
     public TaskDTO convertToDTO(Task task){
         return new TaskDTO(
@@ -38,7 +41,7 @@ public class TaskService {
         );
     }
 
-    public Optional<TaskDTO> getTaskById(Long id) throws Exception {
+    public Optional<TaskDTO> getTaskById(Long id) {
         Optional<Task> optionalTask = repository.findById(id);
 
         if(optionalTask.isPresent()){
