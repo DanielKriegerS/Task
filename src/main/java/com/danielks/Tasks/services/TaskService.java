@@ -75,7 +75,7 @@ public class TaskService {
         }
     }
 
-    public TaskDTO endTask(Long id) throws Exception {
+    public TaskDTO endTask(Long id) {
         Optional<Task> endedTask = repository.findById(id);
         if (endedTask.isPresent()) {
 

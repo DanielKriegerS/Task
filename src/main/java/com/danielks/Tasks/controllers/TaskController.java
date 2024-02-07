@@ -26,21 +26,21 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long id) throws Exception {
+    public ResponseEntity<TaskDTO> getTaskById(@PathVariable Long id) {
         Optional<TaskDTO> task = service.getTaskById(id);
         return task.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping
-    public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO taskDTO) throws Exception {
+    public ResponseEntity<TaskDTO> createTask(@RequestBody TaskDTO taskDTO) {
         TaskDTO createdTask = service.createTask(taskDTO);
         return new ResponseEntity<>(createdTask, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<TaskDTO> updateTask(@PathVariable Long id,
-                                                     @RequestBody TaskDTO taskDTO) throws Exception {
+                                                     @RequestBody TaskDTO taskDTO) {
 
         TaskDTO updatedTask = service.updateTask(id, taskDTO);
         if (updatedTask != null) {
@@ -51,7 +51,7 @@ public class TaskController {
     }
 
     @PutMapping("end/{id}")
-    public ResponseEntity<TaskDTO> endTask(@PathVariable Long id) throws Exception {
+    public ResponseEntity<TaskDTO> endTask(@PathVariable Long id) {
         TaskDTO endedTask = service.endTask(id);
         if (endedTask != null) {
             return new ResponseEntity<>(endedTask, HttpStatus.OK);
