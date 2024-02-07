@@ -1,12 +1,12 @@
 package com.danielks.Tasks.dtos;
 
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 
 public record TaskDTO(
-        @NotNull Long id,
-        @NotBlank (message = "O cabeçalho nao pode estar vazio!") String header,
-        @NotBlank (message = "O corpo nao pode estar vazio!") String body,
+        Long id,
+        @NotEmpty (message = "{header.notempty}") String header,
+        @NotEmpty (message = "{body.notempty}") String body,
         @NotNull boolean ended
 ) {
 }
