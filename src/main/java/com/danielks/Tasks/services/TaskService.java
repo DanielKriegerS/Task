@@ -3,8 +3,8 @@ package com.danielks.Tasks.services;
 import com.danielks.Tasks.dtos.mappers.TaskMapper;
 import com.danielks.Tasks.entities.Task;
 import com.danielks.Tasks.dtos.TaskDTO;
-import com.danielks.Tasks.exceptions.InvalidRequestException;
 import com.danielks.Tasks.exceptions.task.EndedTaskException;
+import com.danielks.Tasks.exceptions.task.InvalidTaskRequestException;
 import com.danielks.Tasks.exceptions.task.TaskNotFoundException;
 import com.danielks.Tasks.repositories.TaskRepository;
 import org.springframework.stereotype.Service;
@@ -43,10 +43,10 @@ public class TaskService {
 
     public TaskDTO createTask(TaskDTO taskDTO) {
         if(taskDTO.body() == null){
-            throw new InvalidRequestException("body");
+            throw new InvalidTaskRequestException("body");
         }
         if (taskDTO.header() == null){
-            throw new InvalidRequestException("header");
+            throw new InvalidTaskRequestException("header");
         }
 
         Task createdTask = mapper.INSTANCE.taskDTOToTask(taskDTO);
